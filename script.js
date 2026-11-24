@@ -8,75 +8,86 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.setProperty('--cream', CONFIG.colors.text);
     }
 
-    // 2. Inject Config Data
-    const titleText = CONFIG.landing.title.replace('{name}', CONFIG.recipientName);
-    document.getElementById('landing-title').innerText = titleText;
-    document.getElementById('landing-subtitle').innerText = CONFIG.landing.subtitle;
-    
-    document.getElementById('message-title').innerText = CONFIG.message.title;
-    const messageContent = document.getElementById('message-content');
-    CONFIG.message.content.forEach(paragraph => {
-        const p = document.createElement('p');
-        p.innerText = paragraph;
-        messageContent.appendChild(p);
-    });
-    document.getElementById('message-signature').innerText = `${CONFIG.message.signature} ${CONFIG.senderName}`;
-    
-    document.getElementById('memories-title').innerText = CONFIG.memories.title;
-    const galleryContainer = document.getElementById('gallery-container');
-    CONFIG.memories.photos.forEach((photo, index) => {
-        const card = document.createElement('div');
-        card.className = 'memory-card reveal';
-        card.innerHTML = `
-            <div class="memory-img-container">
-                <span class="placeholder-icon">📷</span>
-                <img src="${photo.path}" alt="Memory ${index + 1}" onerror="this.style.opacity='0'" data-index="${index}">
-            </div>
-            <div class="memory-caption">${photo.caption}</div>
-        `;
-        
-        card.addEventListener('click', () => {
-            const img = card.querySelector('img');
-            if (img.style.opacity !== '0' && img.complete && img.naturalWidth !== 0) {
-                openLightbox(index);
-            }
-        });
-        galleryContainer.appendChild(card);
-    });
+  // 2. Inject Config Data
+const titleText = CONFIG.landing.title.replace('{name}', CONFIG.recipientName);
+document.getElementById('landing-title').innerText = titleText;
+document.getElementById('landing-subtitle').innerText = CONFIG.landing.subtitle;
 
-    document.getElementById('reasons-title').innerText = CONFIG.reasons.title;
-    const reasonsContainer = document.getElementById('reasons-container');
-    const icons = ['❤️', '✨', '🌟', '💖', '🎉', '🎁'];
-    CONFIG.reasons.items.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'reason-card reveal';
-        card.innerHTML = `
-            <div class="reason-icon">${icons[index % icons.length]}</div>
-            <h3>${item.title}</h3>
-            <p>${item.description}</p>
-        `;
-        reasonsContainer.appendChild(card);
-    });
+document.getElementById('message-title').innerText = CONFIG.message.title;
 
-    document.getElementById('footer-name').innerText = CONFIG.recipientName;
-    
-    document.getElementById('final-heading').innerText = `Happy Birthday, ${CONFIG.recipientName}!`;
-    document.getElementById('final-message').innerText = "May your life always be filled with happiness, wonderful memories, unexpected blessings, and countless reasons to smile.";
+const messageContent = document.getElementById('message-content');
+CONFIG.message.content.forEach(paragraph => {
+const p = document.createElement('p');
+p.innerText = paragraph;
+messageContent.appendChild(p);
+});
 
-    // 3. Landing Page Logic
-    const surpriseBtn = document.getElementById('surprise-btn');
-    const landingPage = document.getElementById('landing-page');
-    const mainExperience = document.getElementById('main-experience');
+document.getElementById('message-signature').innerText =
+${CONFIG.message.signature} ${CONFIG.senderName};
 
-    surpriseBtn.addEventListener('click', () => {
-        landingPage.classList.add('fade-out');
-        setTimeout(() => {
-            landingPage.classList.add('hidden');
-            mainExperience.classList.remove('hidden');
-            fireCelebration();
-            initScrollAnimations();
-        }, 1000);
-    });
+document.getElementById('memories-title').innerText = CONFIG.memories.title;
+
+const galleryContainer = document.getElementById('gallery-container');
+
+CONFIG.memories.photos.forEach((photo, index) => {
+const card = document.createElement('div');
+card.className = 'memory-card reveal';
+
+card.innerHTML = `
+    <div class="memory-img-container">
+        <span class="placeholder-icon">📷</span>
+        <img
+            src="${photo.path}"
+            alt="Memory ${index + 1}"
+            data-index="${index}"
+            onerror="this.style.display='none'; this.parentElement.querySelector('.placeholder-icon').innerText='Image not found';"
+        >
+    </div>
+    <div class="memory-caption">${photo.caption}</div>
+`;
+
+const img = card.querySelector('img');
+
+img.addEventListener('load', () => {
+    img.style.display = 'block';
+    const placeholder = card.querySelector('.placeholder-icon');
+    if (placeholder) placeholder.style.display = 'none';
+});
+
+card.addEventListener('click', () => {
+    if (img.complete && img.naturalWidth > 0) {
+        openLightbox(index);
+    }
+});
+
+galleryContainer.appendChild(card);
+});
+
+document.getElementById('reasons-title').innerText = CONFIG.reasons.title;
+
+const reasonsContainer = document.getElementById('reasons-container');
+const icons = ['❤️', '✨', '🌟', '💖', '🎉', '🎁'];
+
+CONFIG.reasons.items.forEach((item, index) => {
+const card = document.createElement('div');
+card.className = 'reason-card reveal';
+
+card.innerHTML = `
+    <div class="reason-icon">${icons[index % icons.length]}</div>
+    <h3>${item.title}</h3>
+    <p>${item.description}</p>
+`;
+
+reasonsContainer.appendChild(card);
+});
+
+document.getElementById('footer-name').innerText = CONFIG.recipientName;
+
+document.getElementById('final-heading').innerText =
+Happy Birthday, ${CONFIG.recipientName}!;
+
+document.getElementById('final-message').innerText =
+"May your life always be filled with happiness, wonderful memories, unexpected blessings, and countless reasons to smile.";
 
     // 4. Confetti & Particles
     const canvas = document.getElementById('confetti');
