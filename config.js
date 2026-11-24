@@ -58,7 +58,7 @@ memories: {
             caption: "A memory that will always stay in my heart."
         },
         {
-            path: "assets/photos/photo4.JPG",
+            path: "photo4.JPG",
             caption: "Our story, our memories, our little world."
         },
         {
