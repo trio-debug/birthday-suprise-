@@ -8,14 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.style.setProperty('--cream', CONFIG.colors.text);
     }
 
-  // 2. Inject Config Data
+// 2. Inject Config Data
+
 const titleText = CONFIG.landing.title.replace('{name}', CONFIG.recipientName);
 document.getElementById('landing-title').innerText = titleText;
 document.getElementById('landing-subtitle').innerText = CONFIG.landing.subtitle;
 
+// Message Section
 document.getElementById('message-title').innerText = CONFIG.message.title;
 
 const messageContent = document.getElementById('message-content');
+
 CONFIG.message.content.forEach(paragraph => {
 const p = document.createElement('p');
 p.innerText = paragraph;
@@ -25,6 +28,7 @@ messageContent.appendChild(p);
 document.getElementById('message-signature').innerText =
 ${CONFIG.message.signature} ${CONFIG.senderName};
 
+// Memories / Photo Gallery
 document.getElementById('memories-title').innerText = CONFIG.memories.title;
 
 const galleryContainer = document.getElementById('gallery-container');
@@ -40,18 +44,22 @@ card.innerHTML = `
             src="${photo.path}"
             alt="Memory ${index + 1}"
             data-index="${index}"
-            onerror="this.style.display='none'; this.parentElement.querySelector('.placeholder-icon').innerText='Image not found';"
         >
     </div>
     <div class="memory-caption">${photo.caption}</div>
 `;
 
 const img = card.querySelector('img');
+const placeholder = card.querySelector('.placeholder-icon');
 
 img.addEventListener('load', () => {
     img.style.display = 'block';
-    const placeholder = card.querySelector('.placeholder-icon');
-    if (placeholder) placeholder.style.display = 'none';
+    placeholder.style.display = 'none';
+});
+
+img.addEventListener('error', () => {
+    img.style.display = 'none';
+    placeholder.innerText = 'Image not found';
 });
 
 card.addEventListener('click', () => {
@@ -63,9 +71,11 @@ card.addEventListener('click', () => {
 galleryContainer.appendChild(card);
 });
 
+// Reasons Section
 document.getElementById('reasons-title').innerText = CONFIG.reasons.title;
 
 const reasonsContainer = document.getElementById('reasons-container');
+
 const icons = ['❤️', '✨', '🌟', '💖', '🎉', '🎁'];
 
 CONFIG.reasons.items.forEach((item, index) => {
@@ -81,8 +91,10 @@ card.innerHTML = `
 reasonsContainer.appendChild(card);
 });
 
+// Footer
 document.getElementById('footer-name').innerText = CONFIG.recipientName;
 
+// Final Surprise Section
 document.getElementById('final-heading').innerText =
 Happy Birthday, ${CONFIG.recipientName}!;
 
